@@ -2,6 +2,7 @@ import { useReducer, useState } from 'react';
 
 import Button from '@components/Button';
 import { showNotification } from '@services/NotificationService';
+import Settings from './Settings';
 
 const NORIFY_PERIOD = 300000;
 
@@ -61,19 +62,22 @@ function Dashboard() {
   }
 
   return (
-    <div>
-      <div className="">
-        <Button onClick={handleStart}>Start</Button>
-        <Button onClick={handleStop}>Stop</Button>
-        <button>xd</button>
+    <>
+      <Settings />
+      <div>
+        <div className="">
+          <Button onClick={handleStart}>Start</Button>
+          <Button onClick={handleStop}>Stop</Button>
+          <button type="button">xd</button>
+        </div>
+        <p>
+          <span>{time.hours}:</span>
+          <span>{time.minutes}:</span>
+          <span>{time.seconds}</span>
+        </p>
+        <p>{precentageToNotify}% - 100%</p>
       </div>
-      <p>
-        <span>{time.hours}:</span>
-        <span>{time.minutes}:</span>
-        <span>{time.seconds}</span>
-      </p>
-      <p>{precentageToNotify}% - 100%</p>
-    </div>
+    </>
   );
 }
 export default Dashboard;

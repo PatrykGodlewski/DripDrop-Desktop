@@ -1,8 +1,14 @@
 import Dashboard from '@components/Dashboard';
-import Settings from '@components/Settings';
 import { createContext, useMemo, useReducer } from 'react';
-import { Route, MemoryRouter as Router, Routes } from 'react-router-dom';
+import {
+  Navigate,
+  Outlet,
+  Route,
+  MemoryRouter as Router,
+  Routes,
+} from 'react-router-dom';
 
+import Login from '@components/Login';
 import '@styles/App.css';
 import '@styles/Wave.css';
 
@@ -23,6 +29,24 @@ export const SettingsContext = createContext<TContextSettings>({
   updateSettings: () => {},
 });
 
+function ProtectedRoute({
+  user,
+  redirectPath,
+}: {
+  user: string;
+  redirectPath?: string;
+}) {
+  if (user !== 'logged') {
+    return <Navigate to={redirectPath as string} replace />;
+  }
+
+  return <Outlet />;
+}
+
+ProtectedRoute.defaultProps = {
+  redirectPath: '/login',
+};
+
 export default function App() {
   const [settings, updateSettings] = useReducer<TReducerSettings>(
     (prev, next) => {
@@ -37,10 +61,12 @@ export default function App() {
 
   return (
     <SettingsContext.Provider value={contextValue}>
-      <Settings />
       <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute user="notlogged" />}>
+            <Route path="/" element={<Dashboard />} />
+          </Route>
         </Routes>
       </Router>
     </SettingsContext.Provider>
